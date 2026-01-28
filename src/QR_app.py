@@ -2,6 +2,7 @@ import streamlit as st
 import segno
 import io
 from PIL import Image
+import qrcode_artistic
 
 # --- Page Configuration ---
 st.set_page_config(page_title="Custom QR Code Generator", page_icon="🎨")
@@ -13,14 +14,14 @@ st.markdown("Create beautiful QR codes with custom colors and background images.
 st.sidebar.header("Settings")
 
 # 1. Data Input
-url_input = st.sidebar.text_input("Enter URL or Text", value="https://")
+url_input = st.sidebar.text_input("Enter URL or Text", value="")
 
 # 2. Artistic Options
 st.sidebar.subheader("Artistic Style")
 uploaded_file = st.sidebar.file_uploader("Upload Background Image (Optional)", type=["png", "jpg", "jpeg", "gif"])
 
 # 3. Color Customization
-dark_color = st.sidebar.color_picker("QR Code Color (Dark Modules)", "#00008B") # Default DarkBlue
+dark_color = st.sidebar.color_picker("QR Body Color", "#000000") # Default DarkBlue
 
 # Logic for Light Color (Background)
 use_transparent_bg = st.sidebar.checkbox("Transparent Background", value=False)
