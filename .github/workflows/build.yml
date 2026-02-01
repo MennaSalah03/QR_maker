@@ -1,4 +1,4 @@
-name: SLSA L3 Build (Modern Way)
+name: Build 
 
 on:
   push:
