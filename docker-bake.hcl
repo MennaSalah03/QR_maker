@@ -17,7 +17,7 @@ target "app" {
   
   platforms  = ["linux/amd64", "linux/arm64"]
   
-  tags       = ["${REPO}:${TAG}","${REPO}:$latest"]
+  tags       = ["${REPO}:${TAG}","${REPO}:latest"]
   
   cache-from = ["type=registry,ref=${REPO}:buildcache"]
   cache-to   = ["type=registry,ref=${REPO}:buildcache,mode=max"]
