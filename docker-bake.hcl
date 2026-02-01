@@ -1,6 +1,7 @@
 variable "TAG" {
-  default = "latest"
+  default = "1.0.0"
 }
+
 
 variable "REPO" {
   default = "taha2samy/qr-maker-app"
@@ -16,7 +17,7 @@ target "app" {
   
   platforms  = ["linux/amd64", "linux/arm64"]
   
-  tags       = ["${REPO}:${TAG}"]
+  tags       = ["${REPO}:${TAG}","${REPO}:$latest"]
   
   cache-from = ["type=registry,ref=${REPO}:buildcache"]
   cache-to   = ["type=registry,ref=${REPO}:buildcache,mode=max"]
