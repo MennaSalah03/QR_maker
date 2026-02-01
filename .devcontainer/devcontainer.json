@@ -1,0 +1,48 @@
+{
+  "name": "QR_maker Dev Container",
+  "build": {
+    "dockerfile": "dockerfile"
+  },
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": false
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "configureZshAsDefaultShell": true
+    }
+  },
+  "containerEnv": {
+    "DOCKER_API_VERSION": "1.43",
+    "TERM": "xterm-256color",
+    "LANG": "en_US.UTF-8",
+    "LC_ALL": "en_US.UTF-8"
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "locale": "en",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.rendererType": "auto",
+        "terminal.integrated.minimumContrastRatio": 1
+      },
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "skellock.just",
+        "task.vscode-task",
+        "donjayamanne.githistory",
+        "vscode-icons-team.vscode-icons",
+        "ms-python.python"
+      ]
+    }
+  },
+  "postCreateCommand": "sudo chown -R vscode:vscode /workspaces/Ghost-Core;sudo chmod 666 /var/run/docker.sock;echo 'Ghost-Core DevContainer ready!' && git config --global color.ui auto",
+  "remoteUser": "vscode"
+}
