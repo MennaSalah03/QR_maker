@@ -1,0 +1,56 @@
+version: '3'
+
+vars:
+  REPO: taha2samy/qr-maker-app
+  TAG: latest
+  LOCAL_TAG: latest
+
+tasks:
+  setup:
+    cmds:
+      - docker buildx create --name qrbulder --driver docker-container --use || true
+      - docker buildx inspect --bootstrap
+
+  build-local:
+    cmds:
+      - docker build -t {{.REPO}}:{{.LOCAL_TAG}} .
+
+  build:
+    deps: [setup]
+    cmds:
+      - docker buildx bake --file docker-bake.hcl --push
+
+  run:
+    cmds:
+      - docker run --rm -p 8501:8501 {{.REPO}}:{{.LOCAL_TAG}}
+
+  verify:
+    cmds:
+      - gh attestation verify oci://docker.io/{{.REPO}}:{{.TAG}} --owner taha2samy
+
+  verify-cosign:
+    cmds:
+      - |
+        docker run --rm bitnami/cosign:latest verify-attestation \
+          --type https://slsa.dev/provenance/v1 \
+          --certificate-identity-regexp "^https://github.com/taha2samy/QR_maker/.github/workflows/.*" \
+          --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+          {{.REPO}}:{{.TAG}}
+
+  inspect:
+    cmds:
+      - docker buildx imagetools inspect {{.REPO}}:{{.TAG}}
+
+  extract-provenance:
+    cmds:
+      - docker buildx imagetools inspect {{.REPO}}:{{.TAG}} --format "{{ json .Provenance }}" > provenance.json
+
+  clean:
+    cmds:
+      - docker rmi {{.REPO}}:{{.LOCAL_TAG}} || true
+      - docker buildx rm qrbulder || true
+
+  all:
+    cmds:
+      - task: build-local
+      - task: run
