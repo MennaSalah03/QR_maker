@@ -1,7 +1,13 @@
 FROM python:3.11-slim-bookworm AS builder
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libjpeg-dev zlib1g-dev libpng-dev \
+RUN apt-get update \
+    && apt-get -y dist-upgrade \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libjpeg-dev \
+        zlib1g-dev \
+        libpng-dev \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/
