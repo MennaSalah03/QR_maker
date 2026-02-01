@@ -1,41 +1,88 @@
-![act-logo](https://raw.githubusercontent.com/wiki/nektos/act/img/logo-150.png)
 
-# Overview [![push](https://github.com/nektos/act/workflows/push/badge.svg?branch=master&event=push)](https://github.com/nektos/act/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/nektos/act)](https://goreportcard.com/report/github.com/nektos/act) [![awesome-runners](https://img.shields.io/badge/listed%20on-awesome--runners-blue.svg)](https://github.com/jonico/awesome-runners)
+# Project Title
 
-> "Think globally, `act` locally"
+A brief description of what this project does and who it's for
 
-Run your [GitHub Actions](https://developer.github.com/actions/) locally! Why would you want to do this? Two reasons:
 
-- **Fast Feedback** - Rather than having to commit/push every time you want to test out the changes you are making to your `.github/workflows/` files (or for any changes to embedded GitHub actions), you can use `act` to run the actions locally. The [environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables) and [filesystem](https://help.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners#filesystems-on-github-hosted-runners) are all configured to match what GitHub provides.
-- **Local Task Runner** - I love [make](<https://en.wikipedia.org/wiki/Make_(software)>). However, I also hate repeating myself. With `act`, you can use the GitHub Actions defined in your `.github/workflows/` to replace your `Makefile`!
+# 🎨 Custom Photo QR Generator
 
-> [!TIP]
-> **Now Manage and Run Act Directly From VS Code!**<br/>
-> Check out the [GitHub Local Actions](https://sanjulaganepola.github.io/github-local-actions-docs/) Visual Studio Code extension which allows you to leverage the power of `act` to run and test workflows locally without leaving your editor.
+This is a Streamlit application that allows users to create customizable QR codes with the option of adding overlaying photos in the background and still getting an easily-recognized QR code. Most free tools online limit your ability to change shapes or add logos or at least hides it behind a paywall or a free trial; this project aims to provide that flexibility for free while maintaining high-quality output.
 
-# How Does It Work?
+  
+## 🧠 The Learning Journey (Why this matters)
 
-When you run `act` it reads in your GitHub Actions from `.github/workflows/` and determines the set of actions that need to be run. It uses the Docker API to either pull or build the necessary images, as defined in your workflow files and finally determines the execution path based on the dependencies that were defined. Once it has the execution path, it then uses the Docker API to run containers for each action based on the images prepared earlier. The [environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables) and [filesystem](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#file-systems) are all configured to match what GitHub provides.
 
-Let's see it in action with a [sample repo](https://github.com/cplee/github-actions-demo)!
+This project's aim was a mix of  interest in QR code beautification in  python and a desire to apply Docker best practices I learnt with guidance from the Project "[Container Best Practices](https://devopsroadmap.io/projects/container-best-practices/)" in the Dynamic DevOps Roadmap.
 
-![Demo](https://raw.githubusercontent.com/wiki/nektos/act/quickstart/act-quickstart-2.gif)
+* **Modern Package Management:** Switched to **`uv`** by Astral. I chose this because it is significantly faster than `pip` and provides a `uv.lock` file for 100% reproducible environments and more reusable than `requirement.txt` files.
 
-# Act User Guide
+* **Efficient Containerization:** I optimized my `Dockerfile` with Docker Best Practices in mind.
 
-Please look at the [act user guide](https://nektosact.com) for more documentation.
 
-# Support
+## 🛠️ Tech Stack
 
-Need help? Ask in [discussions](https://github.com/nektos/act/discussions)!
 
-# Contributing
+* **Core Logic:** [Segno](https://github.com/heuer/segno) (QR generation), [Pillow](https://www.google.com/search?q=https://python-pillow.org/) (Image processing).
+* **Front-end:** [Streamlit](https://streamlit.io/).
+- **Dependency Management**:  [uv](https://github.com/astral-sh/uv)
+* **DevOps:** [Docker](https://www.docker.com/).
 
-Want to contribute to act? Awesome! Check out the [contributing guidelines](CONTRIBUTING.md) to get involved.
 
-## Manually building from source
 
-- Install Go tools 1.20+ - (<https://golang.org/doc/install>)
-- Clone this repo `git clone git@github.com:nektos/act.git`
-- Run unit tests with `make test`
-- Build and install: `make install`
+ 
+## 🚀 Running the App
+
+  
+### Prerequisites
+
+  You just need to have Docker installed on your system.
+
+
+ 1. **Run the Container:**
+The image currently resides on Dockerhub registry.
+
+```bash
+
+docker run --rm -d -p 8501:8501/tcp menna011/custom-qr-app:2.0
+
+```
+2. **View the App:** Open `http://127.0.0.1:8501` in your browser.
+
+## ⏭️ Applied Best Practices
+
+* Essential Practices
+    * Use Dockerfile linter 🟢
+    * Check Docker language specific best practices 🟢
+    * Create a single application per Docker image 🟢
+    * Create configurable ephemeral containers 🟢
+
+* Image Practices
+    * Use optimal base image 🟢
+    * Pin versions everywhere 🟢
+    * Create image with the optimal size 🟡
+    * Use multi-stage whenever possible 🟢
+    * Avoid any unnecessary files 🟡
+
+* Security Practices
+    * Always use trusted images 🟢
+    * Never use untrusted resources 🟢
+    * Never store sensitive data in the image 🟢
+    * Use a non-root user 🟢
+    * Scan image vulnerabilities 🟢 (Trivy)
+
+* Misc Practices
+    * Leverage Docker build cache 🟢
+    * Avoid system cache 🟢
+    * Create a unified image across envs 🟡
+    * Use ENTRYPOINT with CMD 🟢
+  
+## 🚀 Learned lessons and what I would do differently in future Projects
+-   **Automated CI/CD Pipeline:** Instead of manual building, I would set up GitHub Actions or Jenkins. Every time I push code, the image would be automatically built, scanned for vulnerabilities, and pushed to the registry.
+    
+- **Package Management Issues**: Packages using entry-point plugins (like qrcode-artistic for this project) must be explicitly declared in pyproject.toml and correctly registered in the .venv inside the image to be recognized by the main library.
+
+- **Using the Official Docker**: I Diagnosed and resolved "Permission Denied" errors caused by the Snap version of Docker's security confinement, and therefore installed the official docker, which made working with docker better.
+
+-   **Secret Management:** Right now, the app is simple, but if I added a database or API keys, I would move away from `ENV` variables in the Dockerfile and use a secure secret manager or `.dockerignore` combined with encrypted secrets.
+
+- **Deploying app to the cloud**: This time, I didn't have the time or resources to deploy the app onto the cloud, so I'd like to try doing that in the near future whether it's this app or another one.   
