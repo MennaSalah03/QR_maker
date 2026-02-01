@@ -22,18 +22,25 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # This is the final image. It starts completely clean!
 FROM python:3.12-slim
 
+RUN useradd -m -u 1000 qrappuser
+
 WORKDIR /app
 
+
 # 4. Copy ONLY the finished virtual environment from the builder
-COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder --chown=qrappuser:qrappuser /app/.venv /app/.venv
 
 # 5. Copy your application code
-COPY . .
+COPY --chown=qrappuser:qrappuser . .
 
 # 6. Set the environment to use the virtual environment's tools
 ENV PATH="/app/.venv/bin:$PATH"
 
-EXPOSE 8501
 
+# 7. Setting up before running by exposing port and switching to nonroot user
+EXPOSE 8501
+USER qrappuser
+
+# 8. Running the app
 ENTRYPOINT ["streamlit", "run", "src/QR_app.py"]
 CMD ["--server.port=8501", "--server.address=0.0.0.0"]

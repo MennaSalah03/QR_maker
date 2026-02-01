@@ -43,7 +43,7 @@ The image currently resides on Dockerhub registry.
 
 ```bash
 
-docker run --rm -d -p 8501:8501/tcp menna011/custom-qr-app:2.0
+docker run --rm -d -p 8501:8501/tcp menna011/custom-qr-app:2.1
 
 ```
 2. **View the App:** Open `http://127.0.0.1:8501` in your browser.
