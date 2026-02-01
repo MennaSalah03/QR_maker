@@ -31,18 +31,26 @@ jobs:
           password: ${{ secrets.DOCKERHUB_password }}
 
       - name: Build and Push
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@v4
         id: bake
         with:
           files: |
             ./docker-bake.hcl
           push: true
           set: |
-            *.tags=${{ env.IMAGE_NAME }}:latest
+            *.output=type=image,push=true
+          metadata-file: metadata.json
+
+      - name: Get Image Digest
+        id: get_digest
+        run: |
+          DIGEST=$(jq -r '."app"."containerimage.digest"' metadata.json)
+          echo "DIGEST=$DIGEST" >> $GITHUB_OUTPUT
+          echo "Image Digest is: $DIGEST"
 
       - name: Generate Artifact Attestation
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: index.docker.io/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.bake.outputs.app_digest }}
+          subject-digest: ${{ steps.get_digest.outputs.DIGEST }}
           push-to-registry: true
