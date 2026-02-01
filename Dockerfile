@@ -9,6 +9,7 @@ RUN apt-get update \
         libpng-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+RUN dpkg -l | grep zlib1g
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/
 

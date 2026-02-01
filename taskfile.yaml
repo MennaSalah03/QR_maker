@@ -41,10 +41,22 @@ tasks:
     cmds:
       - docker buildx imagetools inspect {{.REPO}}:{{.TAG}}
 
-  extract-provenance:
-    cmds:
-      - docker buildx imagetools inspect {{.REPO}}:{{.TAG}} --format "{{ json .Provenance }}" > provenance.json
 
+  buildg:
+    interactive: true
+    cmds:
+      - |
+        docker run --rm -it --privileged \
+          -v "$(pwd):/ctx:ro" \
+          ghcr.io/ktock/buildg:0.5.3 debug /ctx
+
+
+
+
+
+  extract-provenance:
+      cmds:
+        - docker buildx imagetools inspect taha2samy/qr-maker-app:latest --format '{{printf "{{"}} json .Provenance {{printf "}}"}}' > provenance.json
   clean:
     cmds:
       - docker rmi {{.REPO}}:{{.LOCAL_TAG}} || true
